@@ -1,70 +1,74 @@
 import java.util.ArrayList;
 
 public class Warehouse {
-    private String name;
-    private double id;
-    private double[] location;
-    private ArrayList<Truck> fleet;
+   private static String name;
+   private static double id;
+   private static double[] location;
+   public static ArrayList<Truck> fleet;
 
-    public Warehouse(String name, double id, double longitude, double latitude) {
-        this.name = name;
-        this.id = id;
-        this.location = new double[]{longitude, latitude};
-        this.fleet = new ArrayList<Truck>();
-    }
+   public Warehouse(String name, double id, double longitude, double latitude) {
+      Warehouse.name = name;
+      Warehouse.id = id;
+      Warehouse.location = new double[]{longitude, latitude};
+      Warehouse.fleet = new ArrayList<Truck>();
+   }
 
-    // Getters and setters for the attributes if needed
+   // Getters and setters for the attributes if needed
 
-    public String getName() {
-        return name;
-    }
+   public static ArrayList<Truck> getTrucks() {
+      return fleet;
+   }
 
-    public void setName(String name) {
-        this.name = name;
-    }
+   public static String getName() {
+      return name;
+   }
 
-    public double getId() {
-        return id;
-    }
+   public static void setName(String name) {
+      Warehouse.name = name;
+   }
 
-    public void setId(double id) {
-        this.id = id;
-    }
+   public static double getId() {
+      return id;
+   }
 
-    public String getLocation() {
-        return String.format("({%f},{%f})", location[0], location[1]);
-    }
+   public static void setId(double id) {
+      Warehouse.id = id;
+   }
 
-    public void setLocation(double longitude, double latitude) {
-        this.location[0] = longitude;
-        this.location[1] = latitude;
-    }
+   public static String getLocation() {
+      return String.format("({%f},{%f})", location[0], location[1]);
+   }
 
-    public ArrayList<Truck> getFleet() {
-        return fleet;
-    }
+   public static void setLocation(double longitude, double latitude) {
+      Warehouse.location[0] = longitude;
+      Warehouse.location[1] = latitude;
+   }
 
-    public void setFleet(ArrayList<Truck> fleet) {
-        this.fleet = fleet;
-    }
+   public static ArrayList<Truck> getFleet() {
+      return fleet;
+   }
 
-    public void addTruck(Truck truck) {
-        fleet.add(truck);
-    }
+   public static void setFleet(ArrayList<Truck> fleet) {
+      Warehouse.fleet = fleet;
+   }
 
-    public void updateTruck(int index, Truck updatedTruck) {
-        if (index >= 0 && index < fleet.size()) {
-            fleet.set(index, updatedTruck);
-        } else {
-            System.out.println("Invalid index");
-        }
-    }
+   public static void addTruck(Truck truck) {
+      fleet.add(truck);
+   }
 
-    public void removeTruck(int index) {
-        if (index >= 0 && index < fleet.size()) {
-            fleet.remove(index);
-        } else {
-            System.out.println("Invalid index");
-        }
-    }
+   public static void updateTruck(int index, Truck updatedTruck) {
+      if (index >= 0 && index < fleet.size()) {
+         fleet.set(index, updatedTruck);
+      } else {
+         System.out.println("Invalid index");
+      }
+   }
+
+   public static void removeTruck(int index) {
+      if (index >= 0 && index < fleet.size()) {
+         fleet.remove(index);
+      } else {
+         System.out.println("Invalid index");
+      }
+   }
 }
