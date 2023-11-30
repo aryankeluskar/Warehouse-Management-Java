@@ -14,17 +14,17 @@ public class Truck {
 
    // Constructor
    public Truck(String name, String numberPlate, String[] goods, double singleDriveTime, double longitude,
-         double latitude,
-         double drivingSpeed, double fuelEfficiency, boolean tampering, boolean collisions) {
+         double latitude, double[] routeBegin, double[] routeEnd,
+         double drivingSpeed, double fuelEfficiency) {
       this.name = name;
       this.numberPlate = numberPlate;
       this.goods = goods;
       this.singleDriveTime = singleDriveTime;
       this.currentLocation = new double[] { longitude, latitude };
+      this.routeBegin = routeBegin;
+      this.routeEnd = routeEnd;
       this.drivingSpeed = drivingSpeed;
       this.fuelEfficiency = fuelEfficiency;
-      this.tampering = tampering;
-      this.collisions = collisions;
    }
 
    // Getter and Setter for name
@@ -92,10 +92,10 @@ public class Truck {
 
    // Getter and Setter for totalDriveTime
    public double getTotalDriveTime() {
-         return totalDriveTime;
+      return totalDriveTime;
    }
 
-    // Getter and Setter for drivingSpeed
+   // Getter and Setter for drivingSpeed
    public double getDrivingSpeed() {
       return drivingSpeed;
    }
@@ -111,24 +111,6 @@ public class Truck {
 
    public void setFuelEfficiency(double fuelEfficiency) {
       this.fuelEfficiency = fuelEfficiency;
-   }
-
-   // Getter and Setter for tampering
-   public boolean isTampering() {
-      return tampering;
-   }
-
-   public void setTampering(boolean tampering) {
-      this.tampering = tampering;
-   }
-
-   // Getter and Setter for collisions
-   public boolean isCollisions() {
-      return collisions;
-   }
-
-   public void setCollisions(boolean collisions) {
-      this.collisions = collisions;
    }
 
    // Method to calculate distance traveled
