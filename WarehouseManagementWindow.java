@@ -3,24 +3,13 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
-import java.net.URI;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
-import java.util.Base64;
 import java.util.Random;
 
 public class WarehouseManagementWindow extends JFrame {
@@ -35,17 +24,33 @@ public class WarehouseManagementWindow extends JFrame {
    private Warehouse warehouse; // Add Warehouse object
 
    public WarehouseManagementWindow() {
+
+      Random random = new Random();
+
+      double wrlongitude = -1 * (random.nextDouble() * (112.4 - 111.8) + 111.8);
+      double wrlatitude = random.nextDouble() * (33.6 - 33.4409) + 33.4409;
+
+      // Create Warehouse object
+      warehouse = new Warehouse("Warehouse Name", 123, wrlongitude, wrlatitude);
+
       // Set window properties
+
       setTitle("Warehouse Management");
       setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
       setLayout(new BorderLayout());
       setSize(1200, 600);
 
-      // Create right pane with website
+      // Create right pane with image of map.png which fills the right panel. put
+      // width and height of panel as 1000 and 600
       JPanel rightPane = new JPanel();
       rightPane.setBackground(Color.WHITE);
-      rightPane.add(new JLabel("Website"));
-      
+      rightPane.setLayout(new BorderLayout());
+      ImageIcon mapImage = new ImageIcon("map.png");
+      JLabel mapLabel = new JLabel(mapImage);
+      rightPane.add(mapLabel, BorderLayout.CENTER);
+
+      // Set the size of the right pane
+      // rightPane.setPreferredSize(new Dimension(1000, 600));
 
       // Create left pane with first section having 20% height, second section having
       // 50% height and third section having 30% height
@@ -135,8 +140,7 @@ public class WarehouseManagementWindow extends JFrame {
             double fuelEfficiency = random.nextDouble() * 20;
             double currentLongitude = -1 * (random.nextDouble() * (112.4 - 111.8) + 111.8);
             double currentLatitude = random.nextDouble() * (33.6 - 33.4409) + 33.4409;
-            double[] routeBegin = { -1 * (random.nextDouble() * (112.4 - 111.8) + 111.8),
-                  random.nextDouble() * (33.6 - 33.4409) + 33.4409 };
+            double[] routeBegin = { wrlongitude, wrlatitude };
 
             double[] routeEnd = { -1 * (random.nextDouble() * (112.4 - 111.8) + 111.8),
                   random.nextDouble() * (33.6 - 33.4409) + 33.4409 };
@@ -154,8 +158,22 @@ public class WarehouseManagementWindow extends JFrame {
             // e1.printStackTrace();
             // }
 
+            String currPolyline = null;
             try {
-               getImageMap(GoogleMaps.getPolyline(routeBegin[1], routeBegin[0], routeEnd[1], routeEnd[0]));
+               currPolyline = GoogleMaps.getPolyline(routeBegin[1], routeBegin[0], routeEnd[1], routeEnd[0]);
+               getImageMap(currPolyline, wrlongitude, wrlatitude);
+               rightPane.removeAll();
+
+               // Create a new JLabel to display the map image
+               ImageIcon mapImage = new ImageIcon("map.png");
+               JLabel mapLabel = new JLabel(mapImage);
+
+               // Add the map label to the right panel
+               rightPane.add(mapLabel);
+
+               // Repaint the right panel to reflect the changes
+               rightPane.revalidate();
+               rightPane.repaint();
             } catch (IOException e1) {
                // TODO Auto-generated catch block
                e1.printStackTrace();
@@ -164,7 +182,7 @@ public class WarehouseManagementWindow extends JFrame {
             // Create the truck object
             Truck truck = new Truck(truckName, numberPlate, goods, singleDriveTime, currentLongitude, currentLatitude,
                   routeBegin, routeEnd,
-                  drivingSpeed, fuelEfficiency);
+                  drivingSpeed, fuelEfficiency, currPolyline);
 
             // Add the truck to the warehouse's fleet
             warehouse.getFleet().add(truck);
@@ -183,10 +201,10 @@ public class WarehouseManagementWindow extends JFrame {
       setVisible(true);
    }
 
-   public void getImageMap(String polyline) throws IOException {
-      String urlCall = "https://api.mapbox.com/styles/v1/aryankeluskar/clpl75rqc009101px48ya3a8r/static/pin-s+F00(-112.0930157100277,33.50053232723088),path-5+f44-0.5("
+   public void getImageMap(String polyline, double wrlong, double wrlati) throws IOException {
+      String urlCall = "https://api.mapbox.com/styles/v1/aryankeluskar/clpl75rqc009101px48ya3a8r/static/pin-s+F00("+wrlong+","+wrlati+"),path-5+f44-0.5("
             + URLEncoder.encode(polyline, StandardCharsets.UTF_8)
-            + ")/auto/500x300?access_token=pk.eyJ1IjoiYXJ5YW5rZWx1c2thciIsImEiOiJjbHBpMTczMjEwYnZsMmxxeDF6a2I0bDVoIn0.2-YAM-tj9acKRvWMC5ewxA";
+            + ")/auto/550x550?access_token=" + APIKeys.getMapBoxAPI();
       saveImage(urlCall, "map.png");
    }
 

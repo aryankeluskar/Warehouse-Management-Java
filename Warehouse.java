@@ -39,6 +39,16 @@ public class Warehouse {
       return String.format("({%f},{%f})", location[0], location[1]);
    }
 
+   public double getLongitude() {
+      return location[0];
+   }
+
+   public double getLatitude() {
+      return location[1];
+   }
+
+   
+
    public void setLocation(double longitude, double latitude) {
       this.location[0] = longitude;
       this.location[1] = latitude;

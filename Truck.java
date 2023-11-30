@@ -6,16 +6,15 @@ public class Truck {
    private double[] currentLocation;
    private double[] routeBegin;
    private double[] routeEnd;
+   private String polylineString;
    private double totalDriveTime;
    private double drivingSpeed;
    private double fuelEfficiency;
-   private boolean tampering;
-   private boolean collisions;
 
    // Constructor
    public Truck(String name, String numberPlate, String[] goods, double singleDriveTime, double longitude,
          double latitude, double[] routeBegin, double[] routeEnd,
-         double drivingSpeed, double fuelEfficiency) {
+         double drivingSpeed, double fuelEfficiency, String polylineString) {
       this.name = name;
       this.numberPlate = numberPlate;
       this.goods = goods;
@@ -25,6 +24,7 @@ public class Truck {
       this.routeEnd = routeEnd;
       this.drivingSpeed = drivingSpeed;
       this.fuelEfficiency = fuelEfficiency;
+      this.polylineString = polylineString;
    }
 
    // Getter and Setter for name
@@ -35,6 +35,12 @@ public class Truck {
    public void setName(String name) {
       this.name = name;
    }
+
+   // Getter and Setter for polylineString
+   public String getPolylineString() {
+      return polylineString;
+   }
+   
 
    // Getter and Setter for numberPlate
    public String getNumberPlate() {
@@ -130,4 +136,6 @@ public class Truck {
       totalDriveTime += singleDriveTime;
       singleDriveTime = 0.0;
    }
+
+   
 }

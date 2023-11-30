@@ -33,6 +33,8 @@ public class GoogleMaps {
       String urlCall = String.format(
             "https://maps.googleapis.com/maps/api/directions/json?destination=%f,%f&origin=%f,%f&key=%s", lati1,
             longi1, lati2, longi2, APIKeys.getGoogleAPI());
+
+      
       HttpRequest request = HttpRequest.newBuilder()
             .uri(URI.create(urlCall))
             // .header("X-RapidAPI-Host", "jokes-by-api-ninjas.p.rapidapi.com")
