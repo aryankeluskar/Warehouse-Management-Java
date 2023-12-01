@@ -9,7 +9,7 @@ public class Warehouse {
    public Warehouse(String name, double id, double longitude, double latitude) {
       this.name = name;
       this.id = id;
-      this.location = new double[]{longitude, latitude};
+      this.location = new double[] { longitude, latitude };
       this.fleet = new ArrayList<Truck>();
    }
 
@@ -46,8 +46,6 @@ public class Warehouse {
    public double getLatitude() {
       return location[1];
    }
-
-   
 
    public void setLocation(double longitude, double latitude) {
       this.location[0] = longitude;

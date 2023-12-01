@@ -21,14 +21,21 @@ public class WarehouseManagementWindow extends JFrame {
    private JButton deleteTruckButton;
    private JButton updateTruckButton;
    private JButton openRouteURLButton;
-   private Warehouse warehouse; // Add Warehouse object
+   private Warehouse warehouse;
+   public double wrlongitude, wrlatitude;
+   public JPanel rightPane;
+   public double[] routeBegin, routeEnd;
+
+   /**
+    * Constructor for the WarehouseManagementWindow class
+    */
 
    public WarehouseManagementWindow() {
 
       Random random = new Random();
 
-      double wrlongitude = -1 * (random.nextDouble() * (112.4 - 111.8) + 111.8);
-      double wrlatitude = random.nextDouble() * (33.6 - 33.4409) + 33.4409;
+      wrlongitude = -1 * (random.nextDouble() * (112.4 - 111.8) + 111.8);
+      wrlatitude = random.nextDouble() * (33.6 - 33.4409) + 33.4409;
 
       // Create Warehouse object
       warehouse = new Warehouse("Warehouse Name", 123, wrlongitude, wrlatitude);
@@ -86,19 +93,10 @@ public class WarehouseManagementWindow extends JFrame {
       bottomLeftPanel.add(updateTruckButton);
       bottomLeftPanel.add(openRouteURLButton);
 
-      // topLeftPanel.setPreferredSize(new Dimension(leftPane.getWidth(), (int)
-      // (leftPane.getHeight() * 0.15)));
-      // middleLeftPanel.setPreferredSize(new Dimension(leftPane.getWidth(), (int)
-      // (leftPane.getHeight() * 0.5)));
-      // bottomLeftPanel.setPreferredSize(new Dimension(leftPane.getWidth(), (int)
-      // (leftPane.getHeight() * 0.35)));
-
       // Add sections to left pane
       leftPane.add(topLeftPanel);
       leftPane.add(middleLeftPanel);
       leftPane.add(bottomLeftPanel);
-
-      // Set the preferred sizes of the panels
 
       // Add panes to main window
       add(leftPane, BorderLayout.WEST);
@@ -110,6 +108,24 @@ public class WarehouseManagementWindow extends JFrame {
       truckInfoTableModel.addColumn("Value");
       truckInfoTable.setModel(truckInfoTableModel);
 
+      openRouteURLButton.addActionListener(new ActionListener() {
+         @Override
+         public void actionPerformed(ActionEvent e) {
+            String selectedTruck = (String) truckDropdown.getSelectedItem();
+            if (selectedTruck != null) {
+               // Get the truck object from the warehouse object
+               for (Truck truck : warehouse.getTrucks()) {
+                  if (truck.getName().equals(selectedTruck)) {
+                     GoogleMaps.getPolyline(truck.routeBegin[1], truck.routeBegin[0], truck.routeEnd[1],
+                           truck.routeEnd[0]);
+                  }
+               }
+            }
+
+         }
+
+      });
+
       // Add action listener to truck dropdown
       truckDropdown.addActionListener(new ActionListener() {
          @Override
@@ -120,7 +136,25 @@ public class WarehouseManagementWindow extends JFrame {
                for (Truck truck : warehouse.getTrucks()) {
                   if (truck.getName().equals(selectedTruck)) {
                      // Update truck info table
-                     updateTruckInfoTable(truck);
+                     try {
+                        updateTruckInfoTable(truck);
+                     } catch (IOException e1) {
+                        e1.printStackTrace();
+                     }
+                     // ImageIcon mapImage = new ImageIcon("map"+truck.getNumberPlate()+".png");
+                     // JLabel mapLabel = new JLabel(mapImage);
+                     // rightPane.add(mapLabel, BorderLayout.CENTER);
+                     // rightPane.revalidate();
+                     // rightPane.repaint();
+                     // rightPane.removeAll();
+                     rightPane.removeAll();
+                     rightPane.add(new JLabel(new ImageIcon("map" + truck.getNumberPlate() + ".png")),
+                           BorderLayout.CENTER);
+                     rightPane.revalidate();
+                     rightPane.repaint();
+
+                     // rightPane.add(leftPane, BorderLayout.EAST);
+
                   }
                }
             }
@@ -145,41 +179,15 @@ public class WarehouseManagementWindow extends JFrame {
             double[] routeEnd = { -1 * (random.nextDouble() * (112.4 - 111.8) + 111.8),
                   random.nextDouble() * (33.6 - 33.4409) + 33.4409 };
             System.out.println((routeBegin[1] + "," + routeBegin[0] + "\n" + routeEnd[1] + "," + routeEnd[0]));
-            // System.out.println(GoogleMaps.getPolyline(routeBegin[1], routeBegin[0],
-            // routeEnd[1], routeEnd[0]));
-            // try {
-            // System.out.println(
-            // URLEncoder.encode(GoogleMaps.getPolyline(routeBegin[1], routeBegin[0],
-            // routeEnd[1], routeEnd[0]),
-            // StandardCharsets.UTF_8.toString()));
 
-            // } catch (UnsupportedEncodingException e1) {
-            // // TODO Auto-generated catch block
-            // e1.printStackTrace();
-            // }
-
-            String currPolyline = null;
+            // Create the truck object
+            String currPolyline = GoogleMaps.getPolyline(routeBegin[1], routeBegin[0], routeEnd[1], routeEnd[0]);
             try {
-               currPolyline = GoogleMaps.getPolyline(routeBegin[1], routeBegin[0], routeEnd[1], routeEnd[0]);
-               getImageMap(currPolyline, wrlongitude, wrlatitude);
-               rightPane.removeAll();
-
-               // Create a new JLabel to display the map image
-               ImageIcon mapImage = new ImageIcon("map.png");
-               JLabel mapLabel = new JLabel(mapImage);
-
-               // Add the map label to the right panel
-               rightPane.add(mapLabel);
-
-               // Repaint the right panel to reflect the changes
-               rightPane.revalidate();
-               rightPane.repaint();
+               getImageMap(currPolyline, wrlongitude, wrlatitude, numberPlate);
             } catch (IOException e1) {
                // TODO Auto-generated catch block
                e1.printStackTrace();
             }
-
-            // Create the truck object
             Truck truck = new Truck(truckName, numberPlate, goods, singleDriveTime, currentLongitude, currentLatitude,
                   routeBegin, routeEnd,
                   drivingSpeed, fuelEfficiency, currPolyline);
@@ -189,7 +197,12 @@ public class WarehouseManagementWindow extends JFrame {
 
             // Update the truck dropdown and truck info table
             updateTruckDropdown();
-            updateTruckInfoTable(truck);
+            try {
+               updateTruckInfoTable(truck);
+            } catch (IOException e1) {
+               // TODO Auto-generated catch block
+               e1.printStackTrace();
+            }
          }
       });
 
@@ -201,13 +214,30 @@ public class WarehouseManagementWindow extends JFrame {
       setVisible(true);
    }
 
-   public void getImageMap(String polyline, double wrlong, double wrlati) throws IOException {
-      String urlCall = "https://api.mapbox.com/styles/v1/aryankeluskar/clpl75rqc009101px48ya3a8r/static/pin-s+F00("+wrlong+","+wrlati+"),path-5+f44-0.5("
+   /**
+    * 
+    * @param polyline - String - string representation of the encoded polyline
+    * @param wrlong   - double - longitude of the warehouse
+    * @param wrlati   - double - latitude of the warehouse
+    * @param lic      - String - license plate of the truck
+    * @throws IOException
+    */
+
+   public void getImageMap(String polyline, double wrlong, double wrlati, String lic) throws IOException {
+
+      String urlCall = "https://api.mapbox.com/styles/v1/aryankeluskar/clpl75rqc009101px48ya3a8r/static/pin-s+F00("
+            + wrlong + "," + wrlati + "),path-5+f44-0.5("
             + URLEncoder.encode(polyline, StandardCharsets.UTF_8)
             + ")/auto/550x550?access_token=" + APIKeys.getMapBoxAPI();
-      saveImage(urlCall, "map.png");
+      System.out.println(urlCall);
+      saveImage(urlCall, "map" + lic + ".png");
    }
 
+   /**
+    * @param imageUrl        - String - the url of the image to be saved
+    * @param destinationFile - String - the file path where the image will be saved
+    * @throws IOException
+    */
    public static void saveImage(String imageUrl, String destinationFile) throws IOException {
       URL url = new URL(imageUrl);
       InputStream is = url.openStream();
@@ -224,6 +254,10 @@ public class WarehouseManagementWindow extends JFrame {
       os.close();
    }
 
+   /**
+    * Generates random data for the warehouse and updates the GUI
+    */
+
    private void generateRandomData() {
       Random random = new Random();
 
@@ -238,6 +272,9 @@ public class WarehouseManagementWindow extends JFrame {
       updateTruckDropdown();
    }
 
+   /**
+    * Updates the truck dropdown with the trucks in the warehouse's fleet
+    */
    private void updateTruckDropdown() {
       DefaultComboBoxModel<String> truckDropdownModel = new DefaultComboBoxModel<>();
       for (int i = 1; i <= warehouse.getFleet().size(); i++) {
@@ -247,7 +284,13 @@ public class WarehouseManagementWindow extends JFrame {
 
    }
 
-   private void updateTruckInfoTable(Truck truck) {
+   /**
+    * Updates the truck info table with the data from the given truck
+    * 
+    * @param truck - Truck - the truck object to get the data from
+    * @throws IOException
+    */
+   private void updateTruckInfoTable(Truck truck) throws IOException {
       DefaultTableModel truckInfoTableModel = (DefaultTableModel) truckInfoTable.getModel();
       truckInfoTableModel.setRowCount(0);
 

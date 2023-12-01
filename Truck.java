@@ -4,8 +4,8 @@ public class Truck {
    private String[] goods;
    private double singleDriveTime;
    private double[] currentLocation;
-   private double[] routeBegin;
-   private double[] routeEnd;
+   public double[] routeBegin;
+   public double[] routeEnd;
    private String polylineString;
    private double totalDriveTime;
    private double drivingSpeed;
@@ -40,7 +40,6 @@ public class Truck {
    public String getPolylineString() {
       return polylineString;
    }
-   
 
    // Getter and Setter for numberPlate
    public String getNumberPlate() {
@@ -106,36 +105,8 @@ public class Truck {
       return drivingSpeed;
    }
 
-   public void setDrivingSpeed(double drivingSpeed) {
-      this.drivingSpeed = drivingSpeed;
-   }
-
-   // Getter and Setter for fuelEfficiency
    public double getFuelEfficiency() {
       return fuelEfficiency;
    }
 
-   public void setFuelEfficiency(double fuelEfficiency) {
-      this.fuelEfficiency = fuelEfficiency;
-   }
-
-   // Method to calculate distance traveled
-   public double calculateDistanceTraveled() {
-      return drivingSpeed * singleDriveTime;
-   }
-
-   // Method to check if the truck needs refueling
-   public boolean needsRefueling() {
-      double distance = calculateDistanceTraveled();
-      double fuelConsumed = distance / fuelEfficiency;
-      return fuelConsumed >= 0.99;
-   }
-
-   // Method to simulate refueling the truck
-   public void refuel() {
-      totalDriveTime += singleDriveTime;
-      singleDriveTime = 0.0;
-   }
-
-   
 }

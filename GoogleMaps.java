@@ -5,6 +5,21 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
 public class GoogleMaps {
+
+   /**
+    * Stores the Google Maps API key and the MapBox API key in APIKeys.java.
+    * Separate file for API keys because I want to push the other files to GitHub without
+    * exposing the API keys.
+    */
+
+   /**
+    * Returns the name of the location given the latitude and longitude
+    * 
+    * @param lati  - double - latitude of the location
+    * @param longi - double - longitude of the location
+    * @return String - name of the location after calling the Google Maps API
+    */
+
    public static String getName(double lati, double longi) {
       String urlCall = String.format(
             "https://maps.googleapis.com/maps/api/geocode/json?latlng=%f,%f&key=%s", lati, longi,
@@ -29,12 +44,23 @@ public class GoogleMaps {
                   "         \"geometry\" : ")));
    }
 
+   /**
+    * Returns the polyline string given the latitude and longitude of the start and
+    * end points
+    * 
+    * @param lati1  - double - latitude of the start point
+    * @param longi1 - double - longitude of the start point
+    * @param lati2  - double - latitude of the end point
+    * @param longi2 - double - longitude of the end point
+    * @return String - encoded polyline string after calling the Google Maps API
+    */
    public static String getPolyline(double lati1, double longi1, double lati2, double longi2) {
       String urlCall = String.format(
             "https://maps.googleapis.com/maps/api/directions/json?destination=%f,%f&origin=%f,%f&key=%s", lati1,
             longi1, lati2, longi2, APIKeys.getGoogleAPI());
 
-      
+      System.out.println(urlCall);
+
       HttpRequest request = HttpRequest.newBuilder()
             .uri(URI.create(urlCall))
             // .header("X-RapidAPI-Host", "jokes-by-api-ninjas.p.rapidapi.com")
@@ -51,11 +77,13 @@ public class GoogleMaps {
       }
       return response.body().substring(response.body().indexOf("overview_polyline\" : \n" + //
             "         {\n" + //
-            "            \"points\" : \"")+("overview_polyline\" : \n" + //
+            "            \"points\" : \"")
+            + ("overview_polyline\" : \n" + //
                   "         {\n" + //
-                  "            \"points\" : \"").length(), response.body().indexOf("\"\n" + //
-                        "         },\n" + //
-                        "         \"summary\""));
+                  "            \"points\" : \"").length(),
+            response.body().indexOf("\"\n" + //
+                  "         },\n" + //
+                  "         \"summary\""));
    }
 
    public static void main(String[] args) {
