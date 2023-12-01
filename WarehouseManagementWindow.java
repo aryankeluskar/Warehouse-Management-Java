@@ -206,6 +206,60 @@ public class WarehouseManagementWindow extends JFrame {
          }
       });
 
+      deleteTruckButton.addActionListener(new ActionListener() {
+         @Override
+         public void actionPerformed(ActionEvent e) {
+            String selectedTruck = (String) truckDropdown.getSelectedItem();
+            if (selectedTruck != null) {
+               // Get the truck object from the warehouse object
+               for (Truck truck : warehouse.getTrucks()) {
+                  if (truck.getName().equals(selectedTruck)) {
+                     // Remove the truck from the warehouse's fleet
+                     warehouse.getFleet().remove(truck);
+
+                     // Update the truck dropdown and truck info table
+                     updateTruckDropdown();
+                     try {
+                        updateTruckInfoTable(truck);
+                     } catch (IOException e1) {
+                        e1.printStackTrace();
+                     }
+                  }
+               }
+            }
+         }
+      });
+
+      openRouteURLButton.addActionListener(new ActionListener() {
+         @Override
+         public void actionPerformed(ActionEvent e) {
+            String selectedTruck = (String) truckDropdown.getSelectedItem();
+            if (selectedTruck != null) {
+               // Get the truck object from the warehouse object
+               for (Truck truck : warehouse.getTrucks()) {
+                  if (truck.getName().equals(selectedTruck)) {
+                     // Open the route URL in the default browser
+                     try {
+                        Desktop.getDesktop().browse(
+                              new URL(
+                                    "https://www.google.com/maps/dir/33.6354739,-112.26867/" + truck.getRouteBegin()[1]
+                                          + ","
+                                          + truck.getRouteBegin()[0] + "/@" + truck.getRouteEnd()[1] + ","
+                                          + truck.getRouteEnd()[0] + ",12.67z/")
+                                    .toURI());
+                        System.out.println(
+                              "https://www.google.com/maps/dir/33.6354739,-112.26867/" + truck.getRouteBegin()[1] + ","
+                                    + truck.getRouteBegin()[0] + "/@" + truck.getRouteEnd()[1] + ","
+                                    + truck.getRouteEnd()[0] + ",12.67z/");
+                     } catch (Exception e1) {
+                        e1.printStackTrace();
+                     }
+                  }
+               }
+            }
+         }
+      });
+
       // Create a new Warehouse object and feed it with random data
       warehouse = new Warehouse("Warehouse", 1234, 0.0, 0.0);
       generateRandomData();
