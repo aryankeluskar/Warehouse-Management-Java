@@ -97,7 +97,12 @@ public class Truck {
 
    // Getter and Setter for totalDriveTime
    public double getTotalDriveTime() {
+
       return totalDriveTime;
+   }
+
+   public void setPolylineString(String polylineString) {
+      this.polylineString = polylineString;
    }
 
    // Getter and Setter for drivingSpeed

@@ -1,14 +1,18 @@
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
+import java.net.URLEncoder;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.Arrays;
 
 public class GoogleMaps {
 
    /**
     * Stores the Google Maps API key and the MapBox API key in APIKeys.java.
-    * Separate file for API keys because I want to push the other files to GitHub without
+    * Separate file for API keys because I want to push the other files to GitHub
+    * without
     * exposing the API keys.
     */
 
@@ -83,8 +87,47 @@ public class GoogleMaps {
                   "         \"summary\""));
    }
 
+   public static String getPolyline(String address1, String address2) {
+      try {
+         address1 = URLEncoder.encode(address1, "UTF-8");
+         address2 = URLEncoder.encode(address2, "UTF-8");
+      } catch (UnsupportedEncodingException e) {
+         e.printStackTrace();
+      }
+      String urlCall = String.format(
+            "https://maps.googleapis.com/maps/api/directions/json?destination=%s&origin=%s&key=%s", address1, address2,
+            APIKeys.getGoogleAPI());
+      HttpRequest request = HttpRequest.newBuilder()
+            .uri(URI.create(urlCall))
+            // .header("X-RapidAPI-Host", "jokes-by-api-ninjas.p.rapidapi.com")
+            // .header("X-RapidAPI-Key", "your-rapidapi-key")
+            .method("GET", HttpRequest.BodyPublishers.noBody())
+            .build();
+      HttpResponse<String> response = null;
+      try {
+         response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
+      } catch (IOException e) {
+         e.printStackTrace();
+      } catch (InterruptedException e) {
+         e.printStackTrace();
+      }
+      return response.body().substring(response.body().indexOf("overview_polyline\" : \n" + //
+            "         {\n" + //
+            "            \"points\" : \"")
+            + ("overview_polyline\" : \n" + //
+                  "         {\n" + //
+                  "            \"points\" : \"").length(),
+            response.body().indexOf("\"\n" + //
+                  "         },\n" + //
+                  "         \"summary\""));
+   }
+
    public static void main(String[] args) {
       // System.out.println(getName(33.4409, -111.8608));
-      System.out.println(getPolyline(33.57886151894017, -111.98955893149417, 33.473531150492086, -111.99264822733647));
+      // System.out.println(getPolyline(33.57886151894017, -111.98955893149417,
+      // 33.473531150492086, -111.99264822733647));
+      // System.out.println(Arrays.toString(getLatLng("1600 Amphitheatre Parkway,
+      // Mountain View, CA")));
+      System.out.println(getPolyline("1600 Amphitheatre Parkway, Mountain View, CA", "820 E Apache Blvd, Tempe, AZ"));
    }
 }

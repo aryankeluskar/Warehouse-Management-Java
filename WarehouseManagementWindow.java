@@ -3,6 +3,7 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -148,8 +149,13 @@ public class WarehouseManagementWindow extends JFrame {
                      // rightPane.repaint();
                      // rightPane.removeAll();
                      rightPane.removeAll();
-                     rightPane.add(new JLabel(new ImageIcon("map" + truck.getNumberPlate() + ".png")),
-                           BorderLayout.CENTER);
+                     JLabel mapboxx = null;
+                     File f = new File("map" + truck.getNumberPlate() + "new.png");
+                     mapboxx = new JLabel(new ImageIcon("map" + truck.getNumberPlate() + ".png"));
+                     if(f.exists() && !f.isDirectory()){
+                        mapboxx = new JLabel(new ImageIcon("map" + truck.getNumberPlate() + "new.png"));
+                     }
+                     rightPane.add(mapboxx, BorderLayout.CENTER);
                      rightPane.revalidate();
                      rightPane.repaint();
 
@@ -230,7 +236,51 @@ public class WarehouseManagementWindow extends JFrame {
          }
       });
 
+      updateTruckButton.addActionListener(new ActionListener() {
+         @Override
+         public void actionPerformed(ActionEvent e) {
+            String selectedTruck = (String) truckDropdown.getSelectedItem();
+            if (selectedTruck != null) {
+               // Get the truck object from the warehouse object
+               for (Truck truck : warehouse.getTrucks()) {
+                  if (truck.getName().equals(selectedTruck)) {
+                     // Update the truck attributes based on the textboxes
+                     System.out.println(truckInfoTableModel.getValueAt(0, 1));
+
+                     // Call getPolyline from GoogleMaps class
+                     String currPolyline = GoogleMaps.getPolyline(truckInfoTableModel.getValueAt(4, 1).toString(),
+                           truckInfoTableModel.getValueAt(5, 1).toString());
+                     truck.setPolylineString(currPolyline);
+
+                     // Call getImageMap to update the image of the map
+                     try {
+                        getImageMap(currPolyline, wrlongitude, wrlatitude, truck.getNumberPlate()+"new");
+                     } catch (IOException e1) {
+                        e1.printStackTrace();
+                     }
+
+                     // Update the truck dropdown and truck info table
+                     updateTruckDropdown();
+                     try {
+                        updateTruckInfoTable(truck);
+                     } catch (IOException e1) {
+                        e1.printStackTrace();
+                     }
+
+                     // rightPane.removeAll();
+                     // JLabel mapboxx = null;
+                     JLabel mapboxx2 = new JLabel(new ImageIcon("map" + truck.getNumberPlate() + "new.png"));
+                     rightPane.add(mapboxx2, BorderLayout.CENTER);
+                     rightPane.revalidate();
+                     rightPane.repaint();
+                  }
+               }
+            }
+         }
+      });
+
       openRouteURLButton.addActionListener(new ActionListener() {
+
          @Override
          public void actionPerformed(ActionEvent e) {
             String selectedTruck = (String) truckDropdown.getSelectedItem();
@@ -256,8 +306,10 @@ public class WarehouseManagementWindow extends JFrame {
                      }
                   }
                }
+               System.out.println(truckInfoTableModel.getValueAt(1, 1));
             }
          }
+
       });
 
       // Create a new Warehouse object and feed it with random data
