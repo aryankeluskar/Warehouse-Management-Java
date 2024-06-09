@@ -21,4 +21,4 @@ ArrayList
 GoogleMaps Directions, Mapbox
 
 ## UML Diagram
-![UML Diagram]("https://www.insidehighered.com/sites/default/files/media/gh%20-%20info%20interview.jpg")
+<img src="https://raw.githubusercontent.com/aryankeluskar/Warehouse-Management-Java/master/CSE205_AryanKeluskar_HonorsContract_UML-1.png">
