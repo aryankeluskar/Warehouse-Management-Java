@@ -19,3 +19,6 @@ ArrayList
 ## APIs Used
 
 GoogleMaps Directions, Mapbox
+
+## UML Diagram
+![UML Diagram]("https://www.insidehighered.com/sites/default/files/media/gh%20-%20info%20interview.jpg")

@@ -2,12 +2,11 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.net.http.HttpClient;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.io.IOException;
 
 public class APITest {
    public static void main(String[] args) {
-      String ogCity = "Toronto", deCity = "Montreal", APIkey = APIKeys.getGoogleAPI();
+      // String ogCity = "Toronto", deCity = "Montreal", APIkey = APIKeys.getGoogleAPI();
       String urlCall = String.format(
             "https://maps.googleapis.com/maps/api/geocode/json?latlng=33.422534,-111.938344&key=%s", APIKeys.getGoogleAPI());
       HttpRequest request = HttpRequest.newBuilder()

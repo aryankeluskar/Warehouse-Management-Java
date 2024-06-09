@@ -281,6 +281,7 @@ public class WarehouseManagementWindow extends JFrame {
 
       openRouteURLButton.addActionListener(new ActionListener() {
 
+         @SuppressWarnings("deprecation")
          @Override
          public void actionPerformed(ActionEvent e) {
             String selectedTruck = (String) truckDropdown.getSelectedItem();
@@ -345,6 +346,7 @@ public class WarehouseManagementWindow extends JFrame {
     * @throws IOException
     */
    public static void saveImage(String imageUrl, String destinationFile) throws IOException {
+      @SuppressWarnings("deprecation")
       URL url = new URL(imageUrl);
       InputStream is = url.openStream();
       OutputStream os = new FileOutputStream(destinationFile);
